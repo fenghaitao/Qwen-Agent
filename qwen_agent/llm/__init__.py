@@ -17,6 +17,7 @@ from typing import Union
 
 from .azure import TextChatAtAzure
 from .base import LLM_REGISTRY, BaseChatModel, ModelServiceError
+from .github import GithubCopilot
 from .oai import TextChatAtOAI
 from .openvino import OpenVINO
 from .transformers_llm import Transformers
@@ -110,6 +111,7 @@ __all__ = [
     'QwenOmniChatAtOAI',
     'OpenVINO',
     'Transformers',
+    'GithubCopilot',
     'get_chat_model',
     'ModelServiceError',
 ]
