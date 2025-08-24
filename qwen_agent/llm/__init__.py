@@ -13,10 +13,12 @@
 # limitations under the License.
 
 import copy
+import os
 from typing import Union
 
 from .azure import TextChatAtAzure
 from .base import LLM_REGISTRY, BaseChatModel, ModelServiceError
+from .github_copilot import GitHubCopilotChat
 from .oai import TextChatAtOAI
 from .openvino import OpenVINO
 from .transformers_llm import Transformers
@@ -95,6 +97,14 @@ def get_chat_model(cfg: Union[dict, str] = 'qwen-plus') -> BaseChatModel:
         model_type = 'qwen_dashscope'
         cfg['model_type'] = model_type
         return LLM_REGISTRY[model_type](cfg)
+    
+    # Check for GitHub Copilot models
+    if 'gpt-4o' in model.lower() or 'copilot' in model.lower():
+        # If no explicit model_type is set, assume github_copilot if github_token is available
+        if 'github_token' in cfg or 'GITHUB_TOKEN' in os.environ:
+            model_type = 'github_copilot'
+            cfg['model_type'] = model_type
+            return LLM_REGISTRY[model_type](cfg)
 
     raise ValueError(f'Invalid model cfg: {cfg}')
 
@@ -104,6 +114,7 @@ __all__ = [
     'QwenChatAtDS',
     'TextChatAtOAI',
     'TextChatAtAzure',
+    'GitHubCopilotChat',
     'QwenVLChatAtDS',
     'QwenVLChatAtOAI',
     'QwenAudioChatAtDS',
