@@ -45,6 +45,14 @@ if hasattr(server_config.server, 'llm'):
         'api_key': server_config.server.api_key,
         'model_server': server_config.server.model_server
     }
+    
+    # Add GitHub Copilot specific configuration if using GitHub Copilot
+    if server_config.server.model_server == 'github_copilot':
+        llm_config.update({
+            'model_type': 'github_copilot',
+            'copilot_integration_id': server_config.server.copilot_integration_id,
+            'editor_version': server_config.server.editor_version,
+        })
 
 assistant = Assistant(llm=llm_config)
 

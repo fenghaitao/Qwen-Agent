@@ -31,6 +31,7 @@ def parse_args():
         type=str,
         default='dashscope',
         help='Set it to `dashscope` if you are using the model service provided by DashScope.'
+        ' Set it to `github_copilot` if using GitHub Copilot via LiteLLM.'
         ' Set it to the base_url (aka api_base) if using an OpenAI API-compatible service such as vLLM or Ollama.'
         ' Default: dashscope',
     )
@@ -39,7 +40,8 @@ def parse_args():
         '--api_key',
         type=str,
         default='',
-        help='You API key to DashScope or the OpenAI API-compatible model service.',
+        help='You API key to DashScope or the OpenAI API-compatible model service.'
+        ' Not required for GitHub Copilot (uses OAuth2 authentication).',
     )
     parser.add_argument(
         '-l',
@@ -47,6 +49,7 @@ def parse_args():
         type=str,
         default='qwen-plus',
         help='Set it to one of {"qwen-max", "qwen-plus", "qwen-turbo"} if using DashScope.'
+        ' Set it to one of {"github_copilot/gpt-4o", "github_copilot/gpt-4o-mini", "github_copilot/gpt-4", "github_copilot/gpt-3.5-turbo"} if using GitHub Copilot.'
         ' Set it to the model name using an OpenAI API-compatible model service.'
         ' Default: qwen-plus',
     )
@@ -72,6 +75,19 @@ def parse_args():
         default=7864,
         help='The port of the creative writing workstation. Default: 7864',
     )
+    # GitHub Copilot specific arguments
+    parser.add_argument(
+        '--copilot_integration_id',
+        type=str,
+        default='vscode-chat',
+        help='GitHub Copilot integration ID. Default: vscode-chat',
+    )
+    parser.add_argument(
+        '--editor_version',
+        type=str,
+        default='vscode/1.85.0',
+        help='Editor version for GitHub Copilot authentication. Default: vscode/1.85.0',
+    )
     args = parser.parse_args()
     args.model_server = args.model_server.replace('0.0.0.0', '127.0.0.1')
     return args
@@ -84,6 +100,9 @@ def update_config(server_config, args, server_config_path):
     server_config.server.server_host = args.server_host
     server_config.server.max_ref_token = args.max_ref_token
     server_config.server.workstation_port = args.workstation_port
+    # GitHub Copilot specific configuration
+    server_config.server.copilot_integration_id = args.copilot_integration_id
+    server_config.server.editor_version = args.editor_version
 
     with open(server_config_path, 'w') as f:
         try:

@@ -31,6 +31,9 @@ class ServerConfig(BaseModel):
     llm: str
     max_ref_token: int
     max_days: int
+    # GitHub Copilot specific fields
+    copilot_integration_id: str = 'vscode-chat'
+    editor_version: str = 'vscode/1.85.0'
 
     class Config:
         protected_namespaces = ()
