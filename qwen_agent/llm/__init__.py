@@ -17,6 +17,7 @@ from typing import Union
 
 from .azure import TextChatAtAzure
 from .base import LLM_REGISTRY, BaseChatModel, ModelServiceError
+from .github_copilot import GitHubCopilotChat
 from .oai import TextChatAtOAI
 from .openvino import OpenVINO
 from .transformers_llm import Transformers
@@ -96,6 +97,11 @@ def get_chat_model(cfg: Union[dict, str] = 'qwen-plus') -> BaseChatModel:
         cfg['model_type'] = model_type
         return LLM_REGISTRY[model_type](cfg)
 
+    if model.startswith('github_copilot/'):
+        model_type = 'github_copilot'
+        cfg['model_type'] = model_type
+        return LLM_REGISTRY[model_type](cfg)
+
     raise ValueError(f'Invalid model cfg: {cfg}')
 
 
@@ -104,6 +110,7 @@ __all__ = [
     'QwenChatAtDS',
     'TextChatAtOAI',
     'TextChatAtAzure',
+    'GitHubCopilotChat',
     'QwenVLChatAtDS',
     'QwenVLChatAtOAI',
     'QwenAudioChatAtDS',
